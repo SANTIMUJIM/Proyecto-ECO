@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ECO · Eco Energy Controller Optimizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  /* Paleta: ajústela al manual de identidad de la IUE si es necesario */
+  :root{
+    --verde:#0E5A3A; --verde-osc:#093D27; --hoja:#E4F0E9; --ambar:#F2B01E;
+    --tinta:#14231C; --suave:#4B5F55; --fondo:#F3F7F4; --linea:#C6D8CD;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--fondo);color:var(--tinta);font:17px/1.55 "Source Sans 3",system-ui,sans-serif}
+  h1,h2{font-family:Sora,system-ui,sans-serif;line-height:1.2;margin:0}
+  header{background:var(--verde-osc);color:#fff;padding:28px 20px 0;overflow:hidden}
+  .wrap{max-width:720px;margin:0 auto}
+  .inst{display:flex;align-items:center;gap:14px;font-size:15px;opacity:.92}
+  .inst img{height:46px;background:#fff;border-radius:6px;padding:4px}
+  header h1{font-size:clamp(26px,5vw,38px);margin:22px 0 6px}
+  header p{margin:0 0 6px;max-width:56ch;color:#D3E6DB}
+  .onda{display:block;width:100%;height:54px;margin-top:10px}
+  main{padding:26px 20px 60px}
+  .aviso{background:#FFF4D6;border:1px solid var(--ambar);border-radius:8px;padding:12px 14px;margin:0 0 20px;font-size:15px}
+  .pasos{display:flex;gap:6px;margin:0 0 22px;padding:0;list-style:none}
+  .pasos li{flex:1;font-size:14px;color:var(--suave);border-top:4px solid var(--linea);padding-top:6px}
+  .pasos li.act{border-color:var(--verde);color:var(--verde-osc);font-weight:600}
+  .pasos li.ok{border-color:var(--ambar)}
+  .panel{background:#fff;border:1px solid var(--linea);border-radius:10px;padding:26px 24px}
+  .panel h2{font-size:22px;color:var(--verde-osc);margin-bottom:4px}
+  .panel .sub{color:var(--suave);margin:0 0 20px}
+  fieldset{border:0;padding:0;margin:0 0 24px;min-width:0}
+  legend{font-weight:600;padding:0;margin-bottom:10px}
+  .op{display:flex;flex-wrap:wrap;gap:8px}
+  .op input,.esc input{position:absolute;opacity:0;pointer-events:none}
+  .op span{display:inline-block;padding:8px 14px;border:1.5px solid var(--linea);border-radius:999px;background:#fff}
+  .esc{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  .esc span{display:block;text-align:center;padding:10px 0;border:1.5px solid var(--linea);border-radius:8px;font-family:Sora,sans-serif;font-weight:600}
+  .ext{display:flex;justify-content:space-between;gap:12px;font-size:14px;color:var(--suave);margin-top:6px}
+  textarea{width:100%;min-height:90px;padding:10px 12px;border:1.5px solid var(--linea);border-radius:8px;font:inherit;resize:none;background:#fff}
+  .consent{display:flex;gap:10px;align-items:flex-start;background:var(--hoja);padding:14px;border-radius:8px;font-size:15px;margin-bottom:24px}
+  .consent input{margin-top:5px;width:18px;height:18px}
+  .acciones{display:flex;justify-content:space-between;gap:12px;margin-top:8px}
+  button{font:600 16px "Source Sans 3",sans-serif;padding:12px 22px;border-radius:8px;border:2px solid var(--verde);cursor:pointer}
+  button:focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
+  .prim{background:var(--verde);color:#fff}
+  .prim:hover:not(:disabled){background:var(--verde-osc)}
+  .sec{background:#fff;color:var(--verde)}
+  button:disabled{opacity:.55;cursor:not-allowed}
+  footer{max-width:720px;margin:0 auto;padding:0 20px 40px;color:var(--suave);font-size:14px}
+  @media (max-width:520px){.panel{padding:20px 16px}.pasos li span{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="inst">
+      <img id="logo" alt="Logo Institución Universitaria de Envigado" hidden>
+      <span>Institución Universitaria de Envigado · Ingeniería Electrónica</span>
+    </div>
+    <h1>ECO · Eco Energy Controller Optimizer</h1>
+    <p>Encuesta de validación del prototipo de monitoreo de consumo energético. Proyecto académico de la asignatura Proyectos Tecnológicos y Sociales.</p>
+    <svg class="onda" viewBox="0 0 720 54" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 27 C 30 -6, 60 60, 90 27 S 150 -6, 180 27 S 240 60, 270 27 S 330 -6, 360 27 S 420 60, 450 27 S 510 -6, 540 27 S 600 60, 630 27 S 690 -6, 720 27" fill="none" stroke="#F2B01E" stroke-width="3"/>
+    </svg>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <p class="aviso"><strong>Vista de demostración.</strong> Puede recorrer la encuesta, pero no se puede responder ni enviar.</p>
+    <ol class="pasos" id="pasos" aria-label="Progreso"></ol>
+    <div class="panel">
+      <div id="contenido"></div>
+      <div class="acciones">
+        <button type="button" class="sec" id="atras">Volver</button>
+        <button type="button" class="prim" id="sigue">Continuar</button>
+      </div>
+    </div>
+  </div>
+</main>
+<footer>
+  Juan Sebastián Camargo Bernal · Johan David Martínez Flórez · Santiago Muñoz Jiménez. Docente: Gabriel Jaime Sánchez Zuluaga.
+  Esta página no recopila respuestas.
+</footer>
+
+<script>
+  // Opcional: enlace público del logo
+  const LOGO_URL = '';
+
+  const PASOS = [
+    {t:'Perfil', h:'Cuéntenos sobre usted', s:'Esto nos ayuda a interpretar sus respuestas.', q:[
+      {k:'op', e:'¿Cuál es su relación con el proyecto?', o:['Estudiante','Docente','Administrativo','Hogar o pequeño negocio','Otro']},
+      {k:'esc', e:'¿Qué tan familiarizado/a está con el tema de la electrónica?', lo:'Nada', hi:'Mucho'},
+      {k:'op', e:'¿Había usado antes un medidor o monitor de consumo eléctrico?', o:['Sí','No']}
+    ]},
+    {t:'Prototipo', h:'Su experiencia con el nodo', s:'Valore de 1 a 5 lo que observó del prototipo y del panel de visualización.', q:[
+      {k:'esc', e:'El panel de visualización es fácil de usar.', lo:'Muy en desacuerdo', hi:'Muy de acuerdo'},
+      {k:'esc', e:'La información de corriente se entiende con claridad.', lo:'Muy en desacuerdo', hi:'Muy de acuerdo'},
+      {k:'esc', e:'Confío en las mediciones que muestra el sistema.', lo:'Muy en desacuerdo', hi:'Muy de acuerdo'},
+      {k:'esc', e:'La protección y el corte remoto de la carga me parecen útiles.', lo:'Nada útil', hi:'Muy útil'},
+      {k:'esc', e:'El aspecto y el tamaño del nodo me parecen adecuados.', lo:'Nada adecuado', hi:'Muy adecuado'}
+    ]},
+    {t:'Impacto', h:'Ahorro de energía y economía', s:'Piense en su uso diario durante varios meses.', q:[
+      {k:'esc', e:'¿Cree que, a largo plazo, este sistema le ayudaría a ahorrar energía?', lo:'Nada', hi:'Mucho'},
+      {k:'esc', e:'¿Cree que, a largo plazo, le ayudaría a ahorrar dinero en su factura?', lo:'Nada', hi:'Mucho'}
+    ]},
+    {t:'Compra', h:'Compra y comentarios', s:'Sus ideas orientan las mejoras de la versión final.', q:[
+      {k:'op', e:'¿Compraría este sistema si estuviera a la venta?', o:['Sí','Tal vez','No']},
+      {k:'op', e:'¿Cuánto estaría dispuesto/a a pagar por un nodo?', o:['Menos de $50.000','$50.000 a $100.000','$100.000 a $200.000','Más de $200.000','No lo compraría']},
+      {k:'txt', e:'¿Por qué? (opcional)'},
+      {k:'txt', e:'¿Qué mejoraría del proyecto? (opcional)'},
+      {k:'txt', e:'Comentarios adicionales (opcional)'}
+    ]}
+  ];
+
+  let paso = 0;
+  const $ = (id) => document.getElementById(id);
+
+  if (LOGO_URL) { const l = $('logo'); l.src = LOGO_URL; l.hidden = false; }
+
+  function dibujar(){
+    const p = PASOS[paso];
+    let html = '<h2>' + p.h + '</h2><p class="sub">' + p.s + '</p>';
+    if (paso === 0) {
+      html += '<label class="consent"><input type="checkbox" disabled>' +
+        '<span>Participo de forma voluntaria. Entiendo que mis respuestas son anónimas y que se usarán solo con fines académicos.</span></label>';
+    }
+    p.q.forEach(function(q){
+      html += '<fieldset disabled><legend>' + q.e + '</legend>';
+      if (q.k === 'op') {
+        html += '<div class="op">' + q.o.map(function(o){
+          return '<label><input type="radio"><span>' + o + '</span></label>';
+        }).join('') + '</div>';
+      } else if (q.k === 'esc') {
+        html += '<div class="esc">' + [1,2,3,4,5].map(function(n){
+          return '<label><input type="radio"><span>' + n + '</span></label>';
+        }).join('') + '</div><div class="ext"><span>1 · ' + q.lo + '</span><span>5 · ' + q.hi + '</span></div>';
+      } else {
+        html += '<textarea aria-label="' + q.e + '"></textarea>';
+      }
+      html += '</fieldset>';
+    });
+    $('contenido').innerHTML = html;
+
+    const ultimo = paso === PASOS.length - 1;
+    $('atras').style.visibility = paso === 0 ? 'hidden' : 'visible';
+    $('sigue').textContent = ultimo ? 'Envío deshabilitado' : 'Continuar';
+    $('sigue').disabled = ultimo;
+    $('pasos').innerHTML = PASOS.map(function(x,i){
+      return '<li class="' + (i===paso?'act':i<paso?'ok':'') + '"><span>' + x.t + '</span></li>';
+    }).join('');
+  }
+
+  $('sigue').onclick = function(){ if (paso < PASOS.length - 1) { paso++; dibujar(); window.scrollTo(0,0); } };
+  $('atras').onclick = function(){ if (paso > 0) { paso--; dibujar(); window.scrollTo(0,0); } };
+  dibujar();
+</script>
+</body>
+</html>
