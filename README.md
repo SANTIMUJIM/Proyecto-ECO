@@ -17,7 +17,7 @@ Vista de demostración: no permite responder ni enviar. [Ver el código](index.h
 ## Diseño electrónico
 
 ### Esquemático
-![Esquemático](Schematic.jpg)
+![Esquemático](Schematic.jpeg)
 
 ### Pistas de la PCB
 ![Pistas de la PCB](PCB_PATHS.jpeg)
@@ -26,7 +26,7 @@ Vista de demostración: no permite responder ni enviar. [Ver el código](index.h
 ![Vista 3D frontal](PCB_3D_FrontView.jpeg)
 
 ### Vista posterior
-![Vista posterior](PCB_BackView.jpeg)
+![Vista posterior](PCB_3D_BackView.jpeg)
 
 ## Equipo
 
